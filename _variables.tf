@@ -70,3 +70,9 @@ variable "asg_memory_target" {
   type        = number
   default = 60
 }
+
+variable "alarm_sns_topics" {
+  description = "SNS topics to notify for ECS/ALB/ASG alarms (leave empty to disable alarm actions)."
+  type        = list(string)
+  default     = []
+}
