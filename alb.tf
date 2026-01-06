@@ -67,3 +67,8 @@ resource "aws_lb_target_group" "ecs_default_https" {
   protocol = "HTTP"
   vpc_id   = var.vpc_id
 }
+
+resource "random_string" "alb_cloudfront_key" {
+  length  = 50
+  special = false
+}
