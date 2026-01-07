@@ -55,7 +55,7 @@ resource "aws_autoscaling_policy" "ecs_memory_tracking" {
     customized_metric_specification {
       metric_dimension {
         name  = "ClusterName"
-        value = aws_autoscaling_group.ecs.name
+        value = var.name
       }
 
       metric_name = "MemoryReservation"
