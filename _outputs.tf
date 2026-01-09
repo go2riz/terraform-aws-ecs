@@ -63,3 +63,5 @@ output "alb_cloudfront_key" {
   value       = random_string.alb_cloudfront_key.result
   sensitive   = true
 }
+
+data "aws_region" "current" {}
