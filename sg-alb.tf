@@ -2,7 +2,7 @@ resource "aws_security_group" "alb" {
   count = var.alb ? 1 : 0
 
   name        = "ecs-${var.name}-lb"
-  description = "ECS load balancer"
+  description = "SG for ECS ALB"
   vpc_id      = var.vpc_id
 
   tags = {
