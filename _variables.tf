@@ -1,78 +1,124 @@
 # == REQUIRED VARS
 
 variable "name" {
-  type        = string
   description = "Name of this ECS cluster"
+  type        = string
 }
 
 variable "instance_type_1" {
-  type        = string
   description = "Instance type for ECS workers (first priority)"
+  type        = string
 }
 
 variable "instance_type_2" {
-  type        = string
   description = "Instance type for ECS workers (second priority)"
+  type        = string
 }
 
 variable "instance_type_3" {
-  type        = string
   description = "Instance type for ECS workers (third priority)"
+  type        = string
 }
 
 variable "on_demand_percentage" {
+  description = "Percentage of on-demand instances vs spot"
   type        = number
-  description = "Percentage of on-demand intances vs spot"
   default     = 100
 }
 
 variable "vpc_id" {
-  type        = string
   description = "VPC ID to deploy the ECS cluster"
+  type        = string
 }
 
 variable "private_subnet_ids" {
-  type        = list(string)
   description = "List of private subnet IDs for ECS instances"
+  type        = list(string)
 }
 
 variable "public_subnet_ids" {
-  type        = list(string)
   description = "List of public subnet IDs for ECS ALB"
+  type        = list(string)
 }
 
 variable "secure_subnet_ids" {
-  type        = list(string)
   description = "List of secure subnet IDs for EFS"
+  type        = list(string)
 }
 
-variable "certificate_arn" {}
+variable "certificate_arn" {
+  description = "ACM certificate ARN used for the ALB HTTPS listener"
+  type        = string
+}
 
 # == OPTIONAL VARS
 
+variable "security_group_ids" {
+  description = "Extra security groups for instances"
+  type        = list(string)
+  default     = []
+}
+
+variable "userdata" {
+  description = "Extra commands to append to instance user-data"
+  type        = string
+  default     = ""
+}
+
 variable "alb" {
+  description = "Whether to deploy an ALB with the cluster"
   type        = bool
   default     = true
-  description = "Whether to deploy an ALB or not with the cluster"
 }
 
 variable "asg_min" {
-  type        = number
+  type    = number
   default = 1
 }
 
 variable "asg_max" {
-  type        = number
+  type    = number
   default = 4
 }
 
 variable "asg_memory_target" {
-  type        = number
+  type    = number
   default = 60
 }
 
-variable "alarm_sns_topics" {
-  description = "SNS topics to notify for ECS/ALB/ASG alarms (leave empty to disable alarm actions)."
-  type        = list(string)
-  default     = []
+# == AMI / INSTANCE HARDENING
+
+variable "ami_id" {
+  description = "Override AMI ID for ECS instances (optional). If null, uses the SSM parameter below."
+  type        = string
+  default     = null
+}
+
+variable "ami_ssm_parameter" {
+  description = "SSM Parameter name for ECS optimized AMI (Amazon Linux 2 recommended by default)."
+  type        = string
+  default     = "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+}
+
+variable "root_volume_size" {
+  description = "Root EBS volume size (GiB)."
+  type        = number
+  default     = 30
+}
+
+variable "root_volume_type" {
+  description = "Root EBS volume type."
+  type        = string
+  default     = "gp3"
+}
+
+variable "imds_http_tokens" {
+  description = "Instance Metadata Service (IMDS) token requirement. Use 'required' to enforce IMDSv2."
+  type        = string
+  default     = "required"
+
+  validation {
+    condition     = contains(["optional", "required"], var.imds_http_tokens)
+    error_message = "imds_http_tokens must be either 'optional' or 'required'."
+  }
 }

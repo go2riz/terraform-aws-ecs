@@ -1,32 +1,30 @@
 resource "aws_iam_instance_profile" "ecs" {
-  name = "ecs-${var.name}-${data.aws_region.current.name}"
+  name = "ecs-${var.name}"
   role = aws_iam_role.ecs.name
 }
 
 resource "aws_iam_role" "ecs" {
-  name = "ecs-${var.name}-${data.aws_region.current.name}"
+  name = "ecs-${var.name}"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Effect    = "Allow"
+        Action    = "sts:AssumeRole"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
 }
 
-# resource "aws_iam_role_policy_attachment" "ecs_ssm" {
-#   role       = aws_iam_role.ecs.name
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-# }
+# Aging fix: AmazonEC2RoleforSSM is deprecated; use AmazonSSMManagedInstanceCore
+resource "aws_iam_role_policy_attachment" "ecs_ssm" {
+  role       = aws_iam_role.ecs.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
 
 resource "aws_iam_role_policy_attachment" "ecs_ecs" {
   role       = aws_iam_role.ecs.name

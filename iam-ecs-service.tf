@@ -1,21 +1,18 @@
 resource "aws_iam_role" "ecs_service" {
-  name = "ecs-service-${var.name}-${data.aws_region.current.name}"
+  name = "ecs-service-${var.name}"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ecs.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Effect    = "Allow"
+        Action    = "sts:AssumeRole"
+        Principal = {
+          Service = "ecs.amazonaws.com"
+        }
+      }
+    ]
+  })
 }
 
 data "aws_iam_policy_document" "ecs_service_policy" {

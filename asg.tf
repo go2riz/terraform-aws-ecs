@@ -39,23 +39,28 @@ resource "aws_autoscaling_group" "ecs" {
     propagate_at_launch = true
   }
 
+  tag {
+    key                 = "Terraform"
+    value               = "true"
+    propagate_at_launch = true
+  }
+
   lifecycle {
     create_before_destroy = true
   }
 }
 
 resource "aws_autoscaling_policy" "ecs_memory_tracking" {
-  name                   = "ecs-${var.name}-memory"
-  policy_type            = "TargetTrackingScaling"
-  autoscaling_group_name = aws_autoscaling_group.ecs.name
-
+  name                      = "ecs-${var.name}-memory"
+  policy_type               = "TargetTrackingScaling"
+  autoscaling_group_name    = aws_autoscaling_group.ecs.name
   estimated_instance_warmup = 180
 
   target_tracking_configuration {
     customized_metric_specification {
       metric_dimension {
         name  = "ClusterName"
-        value = var.name
+        value = aws_ecs_cluster.ecs.name
       }
 
       metric_name = "MemoryReservation"

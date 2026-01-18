@@ -8,10 +8,10 @@ resource "aws_security_group" "ecs_nodes" {
   }
 }
 
-resource "aws_security_group_rule" "nodes_ingress_from_alb" {
+resource "aws_security_group_rule" "all_from_alb_to_ecs_nodes" {
   count = var.alb ? 1 : 0
 
-  description              = "ALB to nodes"
+  description              = "from ALB"
   type                     = "ingress"
   from_port                = 0
   to_port                  = 0
@@ -20,12 +20,22 @@ resource "aws_security_group_rule" "nodes_ingress_from_alb" {
   source_security_group_id = aws_security_group.alb[0].id
 }
 
-resource "aws_security_group_rule" "nodes_egress_all" {
-  description       = "Nodes egress"
+resource "aws_security_group_rule" "all_from_ecs_nodes_to_ecs_nodes" {
+  description              = "Traffic between ECS nodes"
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
+  security_group_id        = aws_security_group.ecs_nodes.id
+  source_security_group_id = aws_security_group.ecs_nodes.id
+}
+
+resource "aws_security_group_rule" "all_from_ecs_nodes_world" {
+  description       = "Traffic to internet"
   type              = "egress"
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ecs_nodes.id
+  cidr_blocks       = ["0.0.0.0/0"]
 }
