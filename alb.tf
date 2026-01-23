@@ -10,7 +10,7 @@ resource "aws_lb" "ecs" {
     aws_security_group.alb[0].id,
   ]
 
-  idle_timeout = 400
+  idle_timeout = var.idle_timeout
 
   tags = {
     Name = "ecs-${var.name}"

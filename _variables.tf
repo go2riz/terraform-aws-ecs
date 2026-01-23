@@ -71,6 +71,11 @@ variable "asg_memory_target" {
   default = 60
 }
 
+variable "idle_timeout" {
+  type    = number
+  default = 400
+}
+
 variable "alarm_sns_topics" {
   description = "SNS topics to notify for ECS/ALB/ASG alarms (leave empty to disable alarm actions)."
   type        = list(string)
