@@ -112,6 +112,11 @@ variable "root_volume_type" {
   default     = "gp3"
 }
 
+variable "idle_timeout" {
+  type    = number
+  default = 400
+}
+
 variable "imds_http_tokens" {
   description = "Instance Metadata Service (IMDS) token requirement. Use 'required' to enforce IMDSv2."
   type        = string
