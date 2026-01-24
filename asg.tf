@@ -1,3 +1,12 @@
+locals {
+  # Collect + dedupe instance types (order doesn't matter for ASG overrides)
+  instance_types_unique = toset(distinct(compact([
+    var.instance_type_1,
+    var.instance_type_2,
+    var.instance_type_3,
+  ])))
+}
+
 resource "aws_autoscaling_group" "ecs" {
   name = "ecs-${var.name}"
 
@@ -8,16 +17,11 @@ resource "aws_autoscaling_group" "ecs" {
         version            = "$Latest"
       }
 
-      override {
-        instance_type = var.instance_type_1
-      }
-
-      override {
-        instance_type = var.instance_type_2
-      }
-
-      override {
-        instance_type = var.instance_type_3
+      dynamic "override" {
+        for_each = local.instance_types_unique
+        content {
+          instance_type = override.value
+        }
       }
     }
 
