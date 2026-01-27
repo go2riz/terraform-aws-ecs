@@ -23,10 +23,10 @@ resource "aws_iam_role" "ecs" {
 EOF
 }
 
-# resource "aws_iam_role_policy_attachment" "ecs_ssm" {
-#   role       = aws_iam_role.ecs.name
-#   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-# }
+resource "aws_iam_role_policy_attachment" "ecs_ssm" {
+  role       = aws_iam_role.ecs.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
 
 resource "aws_iam_role_policy_attachment" "ecs_ecs" {
   role       = aws_iam_role.ecs.name
