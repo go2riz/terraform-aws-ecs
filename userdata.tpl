@@ -20,7 +20,7 @@ EFS_ID=${tf_efs_id}
 
 mkdir -p $${EFS_DIR}
 echo "$${EFS_ID}:/ $${EFS_DIR} efs tls,_netdev" >> /etc/fstab
-mount -a -t efs defaults
+mount -a -t efs defaults || echo "EFS mount failed, continuing..."
 
 echo "### SETUP AGENT"
 
