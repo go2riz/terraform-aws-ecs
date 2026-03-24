@@ -11,13 +11,13 @@ systemctl restart amazon-ssm-agent || true
 
 echo "### SETUP EFS"
 EFS_DIR=/mnt/efs
-EFS_ID=fs-072d1d3e
-mkdir -p ${EFS_DIR}
-echo "${EFS_ID}:/ ${EFS_DIR} efs tls,_netdev" >> /etc/fstab
+EFS_ID=${tf_efs_id}
+mkdir -p $${EFS_DIR}
+echo "$${EFS_ID}:/ $${EFS_DIR} efs tls,_netdev" >> /etc/fstab
 mount -a -t efs defaults || true
 
 echo "### SETUP AGENT"
-echo "ECS_CLUSTER=prod" > /etc/ecs/ecs.config
+echo "ECS_CLUSTER=${tf_cluster_name}" > /etc/ecs/ecs.config
 echo "ECS_ENABLE_SPOT_INSTANCE_DRAINING=true" >> /etc/ecs/ecs.config
 
 echo "### FIX CHECKPOINT"

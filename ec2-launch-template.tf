@@ -2,6 +2,7 @@ locals {
   userdata = templatefile("${path.module}/userdata.tpl", {
     tf_cluster_name = aws_ecs_cluster.ecs.name
     tf_efs_id       = aws_efs_file_system.ecs.id
+    efs_dir         = "/mnt/efs"
   })
 }
 
