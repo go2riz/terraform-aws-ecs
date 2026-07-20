@@ -26,9 +26,10 @@ resource "aws_autoscaling_group" "ecs" {
     }
 
     instances_distribution {
-      spot_allocation_strategy              = "price-capacity-optimized"
-      on_demand_base_capacity                  = 0
-      on_demand_percentage_above_base_capacity = var.on_demand_percentage
+      spot_allocation_strategy                   = "lowest-price"
+      spot_instance_pools                        = 2
+      on_demand_base_capacity                    = 0
+      on_demand_percentage_above_base_capacity   = var.on_demand_percentage
     }
   }
 
